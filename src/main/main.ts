@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import "dotenv/config";
 import express from "express";
-import { AppRouter } from "@http/routes";
+import { AppRouter, PublicRouter } from "@http/routes";
 import { AppDataSource } from "@shared/database/dataSource";
 import { Logger } from "@shared/logger";
 import { authMiddleware } from "@shared/middleware/auth";
@@ -12,6 +12,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use(PublicRouter);
 app.use(authMiddleware);
 app.use("/api", AppRouter);
 const server = http.createServer(app);

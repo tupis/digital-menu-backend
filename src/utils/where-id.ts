@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { isUUID as isUUIDClassValidator } from "class-validator";
 
 function isInt(value: string | number) {
@@ -11,16 +10,11 @@ function isUUID(value: string | number) {
   return isUUIDClassValidator(value);
 }
 
-function isUlid(value: string | number) {
-  if (typeof value === "number") return false;
-  if (value.length !== 26) return false;
-  return true;
-}
-
-export function whereId(id: string | number): any {
+export function whereId(
+  id: string | number,
+): { id: number } | { uuid: string } {
   if (isInt(id)) return { id: Number(id) };
   if (isUUID(id)) return { uuid: String(id) };
-  if (isUlid(id)) return { publicId: String(id) };
 
   return { id: Number(id) };
 }
