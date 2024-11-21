@@ -9,6 +9,7 @@
       "runtimeArgs": ["tsx", "watch"],
       "args": ["src/main/main.ts"],
       "skipFiles": ["<node_internals>/**"],
+      "console": "integratedTerminal",
       "resolveSourceMapLocations": [
         "${workspaceFolder}/**",
         "!**/node_modules/**"
