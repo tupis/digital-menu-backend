@@ -8,6 +8,7 @@ import { authMiddleware } from "@shared/middleware/auth";
 
 import { Server } from "socket.io";
 import http from "node:http";
+import { executeSeed } from "@shared/database/seed";
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -26,7 +27,10 @@ io.on("connection", (socket) => {
 });
 AppDataSource.initialize()
   .then(() => {
-    server.listen(PORT, () => {
+    server.listen(PORT, async () => {
+      Logger.info("Banco de dados conectado");
+      Logger.info("Executando seed");
+      await executeSeed(AppDataSource);
       Logger.info("Servidor rodando na porta " + PORT);
     });
   })
