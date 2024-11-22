@@ -1,6 +1,7 @@
-import { Entity, Column, BeforeInsert } from "typeorm";
+import { Entity, Column, BeforeInsert, ManyToMany } from "typeorm";
 import bcrypt from "bcryptjs";
 import { BaseSchema } from "@shared/database/entities/BaseEntity";
+import { Role } from "./Role";
 
 @Entity()
 export class User extends BaseSchema {
@@ -12,6 +13,9 @@ export class User extends BaseSchema {
 
   @Column({ type: "varchar", length: 255 })
   password: string;
+
+  @ManyToMany(() => Role, (role) => role.users)
+  roles: Role[];
 
   @BeforeInsert()
   async hashPassword() {

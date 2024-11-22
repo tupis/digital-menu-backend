@@ -1,14 +1,60 @@
 import { UserRepository } from "../repositories/UserRepository";
-import { User } from "../entities/User";
 import bcrypt from "bcryptjs";
 import { generateToken } from "@utils/jwt";
 import { LoginUserDto } from "../dto/login-user.dto";
 import { RegisterUserDto } from "../dto/register-user.dto";
+import { RoleRepository } from "../repositories/RoleRepository";
+import { Role } from "../entities/Role";
+import { CreateUserDto } from "../dto/create-user.dto";
+import { ResponseDto } from "@shared/dto/response.dto";
+import { HttpStatus } from "@statusCode";
 
 export class UserService {
-  constructor(private userRepository: UserRepository) {}
+  constructor(
+    private userRepository: UserRepository,
+    private readonly roleRepository: RoleRepository = new RoleRepository(),
+  ) {}
 
-  async createUser(data: RegisterUserDto): Promise<User> {
+  async createUser(data: CreateUserDto) {
+    const existingUser = await this.userRepository.findByEmail(
+      data.email as string,
+    );
+
+    if (existingUser) {
+      return new ResponseDto({
+        statusCode: HttpStatus.BAD_REQUEST,
+        data: "User already exists",
+      });
+    }
+
+    const user = this.userRepository.create(data);
+
+    if (data.rolesId && data.rolesId.length > 0) {
+      const promise = data.rolesId.map(async (id) => {
+        return await this.roleRepository.findById(id);
+      });
+
+      let roles = await Promise.all(promise);
+
+      if (!roles || roles.length === 0) {
+        const defaultRole = await this.roleRepository.findByName("waiter");
+        roles = [defaultRole];
+      }
+
+      user.roles = roles as unknown as Role[];
+    } else {
+      const defaultRole = await this.roleRepository.findByName("waiter");
+      user.roles = [defaultRole!];
+    }
+
+    const newUser = await this.userRepository.save(user);
+    return new ResponseDto({
+      statusCode: HttpStatus.CREATED,
+      data: newUser,
+    });
+  }
+
+  async register(data: RegisterUserDto) {
     const existingUser = await this.userRepository.findByEmail(
       data.email as string,
     );
@@ -18,38 +64,77 @@ export class UserService {
     }
 
     const user = this.userRepository.create(data);
-    return await this.userRepository.save(user);
+
+    const defaultRole = await this.roleRepository.findByName("waiter");
+    user.roles = [defaultRole!];
+
+    const newUser = await this.userRepository.save(user);
+
+    return new ResponseDto({
+      statusCode: HttpStatus.CREATED,
+      data: newUser,
+    });
   }
 
-  async getAllUsers(): Promise<User[]> {
-    return await this.userRepository.find();
+  async getAllUsers() {
+    const users = await this.userRepository.find({
+      relations: { roles: true },
+    });
+
+    return new ResponseDto({
+      statusCode: HttpStatus.OK,
+      data: users,
+    });
   }
 
-  async authenticateUser(data: LoginUserDto): Promise<string> {
+  async authenticateUser(data: LoginUserDto) {
     const user = await this.userRepository.findByEmail(data.email);
     if (!user) {
-      throw new Error("Usuário não encontrado");
+      return new ResponseDto({
+        statusCode: HttpStatus.NOT_FOUND,
+        data: "User not found",
+      });
     }
 
     const isPasswordValid = await bcrypt.compare(data.password, user.password);
     if (!isPasswordValid) {
-      throw new Error("Senha inválida");
+      return new ResponseDto({
+        statusCode: HttpStatus.UNAUTHORIZED,
+        data: "Invalid credentials",
+      });
     }
 
-    const token = generateToken({ id: user.id, email: user.email });
-    return token;
+    const accessToken = generateToken({ id: user.id, email: user.email });
+
+    return new ResponseDto({
+      statusCode: HttpStatus.OK,
+      data: { accessToken },
+    });
   }
 
-  async getUserById(id: Id): Promise<User | null> {
-    return await this.userRepository.findById(id);
+  async getUserById(id: Id) {
+    const user = await this.userRepository.findById(id);
+    return new ResponseDto({
+      statusCode: HttpStatus.OK,
+      data: user,
+    });
   }
 
-  async getUserByEmail(email: string): Promise<User | null> {
-    return await this.userRepository.findByEmail(email);
+  async getUserByEmail(email: string) {
+    const user = await this.userRepository.findByEmail(email);
+    return new ResponseDto({
+      statusCode: HttpStatus.OK,
+      data: user,
+    });
   }
 
   async deleteUserById(id: Id) {
-    const user = await this.getUserById(id);
-    return await this.userRepository.softDelete(user!.id);
+    const user = await this.userRepository.findById(id);
+    await this.userRepository.softDelete(user!.id);
+
+    return new ResponseDto({
+      statusCode: HttpStatus.NO_CONTENT,
+      data: "User deleted",
+    });
   }
 }
