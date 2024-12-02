@@ -6,7 +6,6 @@ import { whereId } from "@utils/where-id";
 import { AssociateProductsDto } from "../dto/associate-products.dto";
 import { ProductsRepository } from "@modules/products/repositories/ProductsRepository";
 import { PointOfSalesRepository } from "@modules/pointOfSales/repositories/PointOfSalesRepository";
-import { qualiraLog } from "@shared/logger/qualira";
 
 export class CategoryService {
   constructor(
