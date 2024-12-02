@@ -1,7 +1,9 @@
 import {
   IsNumber,
+  IsNumberString,
   IsOptional,
   IsString,
+  Validate,
   ValidateNested,
 } from "class-validator";
 import { CreateOptionalDto } from "./create-optional.dto";
@@ -24,4 +26,7 @@ export class CreateProductDto {
   @ValidateNested({ each: true })
   @Type(() => CreateOptionalDto)
   optional: CreateOptionalDto[];
+
+  @Validate(IsNumberString)
+  pointOfSalesId: string | number;
 }

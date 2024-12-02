@@ -1,4 +1,5 @@
-import { IsString } from "class-validator";
+import { IsNumberOrString } from "@shared/decorators/is-string-or-number-validator";
+import { IsString, Validate } from "class-validator";
 
 export class CreateCategoryDto {
   @IsString()
@@ -6,4 +7,7 @@ export class CreateCategoryDto {
 
   @IsString()
   description: string;
+
+  @Validate(IsNumberOrString)
+  pointOfSalesId: number | string;
 }

@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { CategoryController } from "@http/controllers/CategoryController";
+import { validationMiddlewareDto } from "@shared/middleware/validation.dto";
+import { AssociateProductsDto } from "@modules/category/dto/associate-products.dto";
 
 const categoryController = new CategoryController();
 const router = Router();
@@ -23,5 +25,13 @@ router.delete("/:id", (req, res) => {
 router.patch("/:id", (req, res) => {
   categoryController.update(req, res);
 });
+
+router.post(
+  "/:id/products",
+  validationMiddlewareDto(AssociateProductsDto),
+  (req, res) => {
+    categoryController.associateProducts(req, res);
+  },
+);
 
 export default router;

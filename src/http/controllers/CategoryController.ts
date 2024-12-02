@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { getCategoryService } from "@modules/category/CategoryFactory";
 import { CategoryService } from "@modules/category/services/CategoryService";
 import { CreateCategoryDto } from "@modules/products/dto/create-category.dto";
+import { AssociateProductsDto } from "@modules/category/dto/associate-products.dto";
 
 export class CategoryController {
   constructor(
@@ -30,7 +31,7 @@ export class CategoryController {
     return response.status(statusCode).json(data);
   }
 
-  async getAll(request: Request, response: Response): Promise<Response> {
+  async getAll(_request: Request, response: Response): Promise<Response> {
     const { data, statusCode } = await this.categoryService.getAll();
     return response.status(statusCode).json(data);
   }
@@ -38,6 +39,17 @@ export class CategoryController {
   async getOne(request: Request, response: Response): Promise<Response> {
     const { data, statusCode } = await this.categoryService.getOne(
       request.params.id as Id,
+    );
+    return response.status(statusCode).json(data);
+  }
+
+  async associateProducts(
+    request: Request,
+    response: Response,
+  ): Promise<Response> {
+    const { data, statusCode } = await this.categoryService.associateProducts(
+      request.params.id as Id,
+      request.body as AssociateProductsDto,
     );
     return response.status(statusCode).json(data);
   }
