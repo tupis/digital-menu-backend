@@ -12,7 +12,7 @@ import { CreateOptionalDto } from "../dto/create-optional.dto";
 export class ProductsService {
   constructor(
     private productsRepository: ProductsRepository,
-    private readonly productOptionalRepository: ProductOptionalRepository = new ProductOptionalRepository(),
+    private readonly productOptionalRepository: ProductOptionalRepository,
   ) {}
 
   async create({ optional, ...data }: CreateProductDto) {

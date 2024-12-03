@@ -1,6 +1,7 @@
-import { Entity, Column, OneToMany } from "typeorm";
+import { Entity, Column, OneToMany, ManyToMany, JoinTable } from "typeorm";
 import { BaseSchema } from "@shared/database/entities/BaseEntity";
 import { ProductOptional } from "./ProductOptional";
+import { Category } from "@modules/category/entities/Category";
 
 @Entity()
 export class Product extends BaseSchema {
@@ -21,4 +22,8 @@ export class Product extends BaseSchema {
 
   @OneToMany(() => ProductOptional, (optional) => optional.product)
   optionals: ProductOptional[];
+
+  @ManyToMany(() => Category, (category) => category.products)
+  @JoinTable()
+  categories: Category[];
 }
