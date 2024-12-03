@@ -22,4 +22,7 @@ export class Category extends BaseSchema {
 
   @ManyToMany(() => Product, (product) => product.categories)
   products: Product[];
+
+  @Column({ type: "boolean", default: true })
+  active: boolean;
 }

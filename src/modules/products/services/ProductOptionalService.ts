@@ -1,5 +1,5 @@
 import { whereId } from "@utils/where-id";
-import { CreateCategoryDto } from "../dto/create-category.dto";
+import { CreateCategoryDto } from "../../category/dto/create-category.dto";
 import { ProductOptional } from "../entities/ProductOptional";
 import { ProductOptionalRepository } from "../repositories/ProductOptionalRepository";
 import { ResponseDto } from "@shared/dto/response.dto";

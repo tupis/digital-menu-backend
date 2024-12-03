@@ -1,7 +1,7 @@
 import { IsNumberOrString } from "@shared/decorators/is-string-or-number-validator";
 import { IsString, Validate } from "class-validator";
 
-export class CategoryDto {
+export class CreateCategoryDto {
   @IsString()
   name: string;
 

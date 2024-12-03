@@ -1,4 +1,4 @@
-import { CreateCategoryDto } from "@modules/products/dto/create-category.dto";
+import { CreateCategoryDto } from "@modules/category/dto/create-category.dto";
 import { CategoryRepository } from "../repositories/CategoryRepository";
 import { ResponseDto } from "@shared/dto/response.dto";
 import { HttpStatus } from "@statusCode";

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { getCategoryService } from "@modules/category/CategoryFactory";
 import { CategoryService } from "@modules/category/services/CategoryService";
-import { CreateCategoryDto } from "@modules/products/dto/create-category.dto";
+import { CreateCategoryDto } from "@modules/category/dto/create-category.dto";
 import { AssociateProductsDto } from "@modules/category/dto/associate-products.dto";
 
 export class CategoryController {
