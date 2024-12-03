@@ -53,4 +53,16 @@ export class CategoryController {
     );
     return response.status(statusCode).json(data);
   }
+
+  async removeAssociateProducts(
+    request: Request,
+    response: Response,
+  ): Promise<Response> {
+    const { data, statusCode } =
+      await this.categoryService.removeAssociateProducts(
+        request.params.id as Id,
+        request.body as AssociateProductsDto,
+      );
+    return response.status(statusCode).json(data);
+  }
 }

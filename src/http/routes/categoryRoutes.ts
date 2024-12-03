@@ -34,4 +34,12 @@ router.post(
   },
 );
 
+router.delete(
+  "/:id/products",
+  validationMiddlewareDto(AssociateProductsDto),
+  (req, res) => {
+    categoryController.removeAssociateProducts(req, res);
+  },
+);
+
 export default router;

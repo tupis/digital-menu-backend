@@ -131,4 +131,35 @@ export class CategoryService {
       statusCode: updatedCategory.statusCode,
     });
   }
+
+  async removeAssociateProducts(id: Id, data: AssociateProductsDto) {
+    const category = await this.categoryRepository.findOne({
+      where: whereId(id),
+      relations: { products: true },
+    });
+
+    if (!category) {
+      return new ResponseDto({
+        statusCode: HttpStatus.NOT_FOUND,
+        data: "Category not found",
+      });
+    }
+
+    const products = await this.productRepository.findManyProductsById(
+      data.products,
+    );
+
+    const newProducts = category.products.filter(
+      (product) => !products.find((p) => p.id === product.id),
+    );
+
+    category.products = newProducts;
+
+    await this.categoryRepository.save(category);
+
+    return new ResponseDto({
+      data: category,
+      statusCode: HttpStatus.OK,
+    });
+  }
 }
