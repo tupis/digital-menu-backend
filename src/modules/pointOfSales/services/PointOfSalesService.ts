@@ -83,6 +83,7 @@ export class PointOfSalesService {
   async getOneById(id: Id) {
     const data = await this.pointofsalesRepository.findOne({
       where: whereId(id),
+      relations: { category: true },
     });
 
     if (!data) {
